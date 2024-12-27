@@ -14,7 +14,7 @@ def custom_run():
 
     run_parameters = Parameters(
         run_name="Custom run",
-        case_path=Path("custom_runs"),
+        cases_folder=Path("custom_runs"),
         template_path=Path("openfoam_template"),
         csv_path=Path("results/csv/custom_results.csv"),
     )
@@ -25,7 +25,7 @@ def custom_run():
 def default_run():
     run_parameters = Parameters(
         run_name="Debugging run",
-        case_path=Path("openfoam_cases"),
+        cases_folder=Path("openfoam_cases"),
         template_path=Path("openfoam_template"),
         csv_path=Path("results/csv/results.csv"),
     )

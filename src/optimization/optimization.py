@@ -14,7 +14,7 @@ from src.optimization.openfoam_interfaces import (
 from src.utils.logging_setup import get_logger
 
 from ..optimization.parameters import Parameters  # type: ignore
-from ..utils.log_results import log_result  # type: ignore
+from ..optimization.result_processing import process_result  # type: ignore
 
 
 def funct(x: np.array, parameters: Parameters):
@@ -33,7 +33,7 @@ def funct(x: np.array, parameters: Parameters):
 
     logger.info(f"Running case {case_uuid} with {x}")
 
-    case_path = parameters.case_path / case_uuid
+    case_path = parameters.cases_folder / case_uuid
     template_path = parameters.template_path
 
     case_path.mkdir(exist_ok=True, parents=True)
@@ -45,10 +45,11 @@ def funct(x: np.array, parameters: Parameters):
     check_mesh_result = run_checkmesh(case_path=case_path)
 
     if not (block_mesh_result and check_mesh_result):
-        log_result(
+        process_result(
             x=x,
             parameters=parameters,
             case_uuid=case_uuid,
+            case_path=case_path,
             block_mesh_result=block_mesh_result,
             check_mesh_result=check_mesh_result,
             simple_result=False,
@@ -59,10 +60,11 @@ def funct(x: np.array, parameters: Parameters):
     simple_result = run_simple(case_path)
 
     if not simple_result:
-        log_result(
+        process_result(
             x=x,
             parameters=parameters,
             case_uuid=case_uuid,
+            case_path=case_path,
             block_mesh_result=block_mesh_result,
             check_mesh_result=check_mesh_result,
             simple_result=simple_result,
@@ -81,10 +83,11 @@ def funct(x: np.array, parameters: Parameters):
 
     logger.info(f"Successfully ran: {case_uuid} - {lift_drag_ratio}")
 
-    log_result(
+    process_result(
         x=x,
         parameters=parameters,
         case_uuid=case_uuid,
+        case_path=case_path,
         block_mesh_result=block_mesh_result,
         check_mesh_result=check_mesh_result,
         simple_result=simple_result,
@@ -92,5 +95,6 @@ def funct(x: np.array, parameters: Parameters):
         cd=df["Cd"].iloc[-1],
     )
 
-    shutil.rmtree(case_path)
-    return lift_drag_ratio
+    return np.abs(
+        lift_drag_ratio
+    )  # Positive or negative doesn't matter; we can fly upside down
