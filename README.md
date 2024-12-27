@@ -1,6 +1,6 @@
 # OpenFOAM airfoil optimization 
 
-<img src="figures/Pretty airfoil, Cl_Cd 39.151.png" width="600" alt="ParaView visualization for an example airfoil the code optimized.">
+<img src="figures/Pretty airfoil, Cl_Cd 39.151.png" width="800" alt="ParaView visualization for an example airfoil the code optimized.">
 
 ## Overview 
 
