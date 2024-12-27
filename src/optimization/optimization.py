@@ -18,7 +18,16 @@ from ..optimization.parameters import Parameters  # type: ignore
 from ..optimization.result_processing import process_result  # type: ignore
 
 
-def funct(x: np.array, parameters: Parameters):
+def funct(x: np.array, parameters: Parameters) -> float:
+    """Optimization function.
+
+    Args:
+        x (np.array): The six CST parameters to generate the airfoil with.
+        parameters (Parameters): Settings dataclass.
+
+    Returns:
+        float: Goal function performance.
+    """
     logger = get_logger(__name__)
 
     case_uuid = str(uuid.uuid4()) if not parameters.is_debug else parameters.run_name
@@ -46,7 +55,12 @@ def funct(x: np.array, parameters: Parameters):
     block_mesh_result = run_blockmesh(case_path=case_path)
     check_mesh_result = run_checkmesh(case_path=case_path)
 
-    if not (block_mesh_result and check_mesh_result):
+    if not (
+        block_mesh_result and check_mesh_result
+    ):  # blockMesh is giving errors or checkMesh is complaining.
+        logger.debug(
+            f"Encountered error. Skipping {case_uuid}. blockMesh: {block_mesh_result}. checkMesh: {check_mesh_result}"
+        )
         process_result(
             x=x,
             parameters=parameters,
@@ -60,7 +74,8 @@ def funct(x: np.array, parameters: Parameters):
 
     simple_result = run_simple(case_path)
 
-    if not simple_result:
+    if not simple_result:  # SIMPLE has failed to run.
+        logger.debug(f"Encountered error with SIMPLE. Skipping {case_uuid}.")
         process_result(
             x=x,
             parameters=parameters,
@@ -74,6 +89,7 @@ def funct(x: np.array, parameters: Parameters):
         )
         return np.inf
 
+    # We now got data: let's read it and post-process a bit.
     df = read_force_coefficients(case_path)
 
     df["Cl_Cd_ratio"] = df["Cl"] / df["Cd"]
@@ -96,4 +112,4 @@ def funct(x: np.array, parameters: Parameters):
 
     return -np.abs(
         lift_drag_ratio
-    )  # Positive or negative doesn't matter; we can fly upside down
+    )  # Positive or negative doesn't matter; we can fly upside down too.

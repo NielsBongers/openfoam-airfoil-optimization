@@ -1,3 +1,8 @@
+# This code is taken from https://github.com/Ry10/Kulfan_CST.
+# No license is specified there.
+# This takes six parameters and converts it into an airfoil shape.
+# Slightly modified to work with Python 3.
+
 from math import cos, factorial, pi
 
 import numpy as np

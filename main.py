@@ -2,21 +2,16 @@ import argparse
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 from scipy.optimize import differential_evolution
 
 from src.optimization.optimization import Parameters, funct
+from src.post_processing.post_process import render_foam_cases
 
 
 def custom_run():
     x = np.array(
-        [
-            -0.1172639154843245,
-            0.1970869704402985,
-            0.353885748122542,
-            0.5002696302358005,
-            0.6169617830584412,
-            0.8313519974373287,
-        ]
+        [-0.14624043, 0.21336766, 0.41475734, 0.1628779, 0.08464761, 0.81322424]
     )
 
     run_parameters = Parameters(
@@ -31,6 +26,42 @@ def custom_run():
     return funct(x=x, parameters=run_parameters)
 
 
+def run_top_n(csv_path: Path = Path("results/csv/results.csv"), n: int = 10):
+    df = pd.read_csv(csv_path)
+
+    df_filtered = df.dropna(subset=["cl", "cd"]).copy()
+    df_filtered["cl_cd_abs"] = (df["cl"] / df["cd"]).abs()
+    df_filtered = df_filtered.sort_values(by="cl_cd_abs", ascending=False)
+
+    for row in df_filtered.head(n).itertuples():
+        x = np.array([row.x0, row.x1, row.x2, row.x3, row.x4, row.x5])
+
+        run_name = f"cl_cd_{round(row.cl_cd_abs, 3)}_{row.UUID}"
+
+        run_parameters = Parameters(
+            run_name=run_name,
+            cases_folder=Path("custom_runs"),
+            template_path=Path("openfoam_template"),
+            is_debug=True,
+            csv_path=Path("results/csv/custom_results.csv"),
+            fluid_velocity=np.array([100, 0, 0]),
+        )
+
+        case_path = run_parameters.cases_folder / Path(run_parameters.run_name)
+        case_path.mkdir(exist_ok=True, parents=True)
+
+        csv_path.parent.mkdir(exist_ok=True, parents=True)
+
+        # Creating the .foam file
+        with open(
+            case_path / (run_parameters.run_name + ".foam"),
+            "w",
+        ) as _:
+            pass
+
+        funct(x=x, parameters=run_parameters)
+
+
 def default_run():
     run_parameters = Parameters(
         run_name="Gathering data, including negative",
@@ -41,7 +72,8 @@ def default_run():
         fluid_velocity=np.array([100, 0, 0]),
     )
 
-    # Analyzed with GPT4o, 2% - 98% of values attempted.
+    run_parameters.csv_path.mkdir(exist_okay=True, parents=True)
+
     bounds = [
         (-1.4400, -0.1027),
         (-1.2552, 1.2923),
@@ -51,7 +83,7 @@ def default_run():
         (-0.3631, 1.4440),
     ]
 
-    result = differential_evolution(
+    differential_evolution(
         funct,
         bounds,
         strategy="best1bin",
@@ -62,9 +94,6 @@ def default_run():
         seed=42,
         args=(run_parameters,),
     )
-
-    print("Optimal solution:", result.x)
-    print("Objective function value:", result.fun)
 
 
 if __name__ == "__main__":
@@ -77,6 +106,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.custom:
-        custom_run()
+        run_top_n()
     else:
         default_run()

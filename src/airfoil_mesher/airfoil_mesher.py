@@ -1,3 +1,22 @@
+# Based on https://github.com/curiosityFluids/curiosityFluidsAirfoilMesher.
+# Excellent explanation: https://curiosityfluids.com/2019/04/22/automatic-airfoil-cmesh-generation-for-openfoam-rev-1/.
+# Slightly modified to wirk with my other functions and the CST coordinate converter.
+# Original license is below:
+
+
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+
+#  This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import math
 from pathlib import Path
 
@@ -927,10 +946,3 @@ def mesh_airfoil(airfoil_coordinates: np.array, case_path: Path):
     f.write(");\n")
 
     f.close()
-
-
-# if __name__ == "__main__":
-# airfoil_coordinates = np.loadtxt("airfoil_shape.dat", skiprows=1, delimiter=",")
-# case_location = Path("openfoam_cases/debug_1")
-
-# mesh_airfoil(airfoil_coordinates=airfoil_coordinates, case_path=case_location)
