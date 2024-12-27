@@ -18,7 +18,7 @@ def custom_run():
         template_path=Path("openfoam_template"),
         is_debug=True,
         csv_path=Path("results/csv/custom_results.csv"),
-        fluid_velocity=np.array([100, 100, 0]),
+        fluid_velocity=np.array([100, 0, 0]),
     )
 
     return funct(x=x, parameters=run_parameters)
@@ -26,7 +26,7 @@ def custom_run():
 
 def default_run():
     run_parameters = Parameters(
-        run_name="Debugging run",
+        run_name="Gathering data, including negative",
         cases_folder=Path("openfoam_cases"),
         template_path=Path("openfoam_template"),
         is_debug=False,
@@ -51,7 +51,7 @@ def default_run():
         maxiter=10000000,
         popsize=60,
         tol=1e-1,
-        workers=5,  # Native support for parallelization
+        workers=10,
         seed=42,
         args=(run_parameters,),
     )

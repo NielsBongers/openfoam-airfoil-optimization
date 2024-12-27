@@ -41,7 +41,6 @@ def funct(x: np.array, parameters: Parameters):
     shutil.copytree(src=template_path, dst=case_path, dirs_exist_ok=True)
 
     set_fluid_velocities(case_path, parameters.fluid_velocity)
-
     mesh_airfoil(airfoil_coordinates=airfoil_coordinates, case_path=case_path)
 
     block_mesh_result = run_blockmesh(case_path=case_path)
@@ -81,7 +80,6 @@ def funct(x: np.array, parameters: Parameters):
     lift_drag_ratio = df["Cl_Cd_ratio"].iloc[-1]
 
     logger.debug(f"Got {lift_drag_ratio}")
-
     logger.info(f"Successfully ran: {case_uuid} - {lift_drag_ratio}")
 
     process_result(
@@ -96,6 +94,6 @@ def funct(x: np.array, parameters: Parameters):
         cd=df["Cd"].iloc[-1],
     )
 
-    return np.abs(
+    return -np.abs(
         lift_drag_ratio
     )  # Positive or negative doesn't matter; we can fly upside down

@@ -90,9 +90,6 @@ def set_fluid_velocities(case_path: Path, v: np.array):
     u_template = u_template.replace("{{v_y}}", str(v[1]))
     u_template = u_template.replace("{{v_z}}", str(v[2]))
 
-    print(u_template)
-    print(control_dict_template)
-
     with open(case_path / "system/controlDict", "w") as f:
         control_dict_template = f.write(control_dict_template)
 
