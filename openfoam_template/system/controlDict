@@ -58,7 +58,7 @@ functions {
     liftDir (0 1 0); // Direction of lift; adjust based on your setup
     dragDir (1 0 0); // Direction of drag; adjust based on your setup
     pitchAxis (0 0 1); // Axis for pitching moment; adjust as needed
-    magUInf 100.0; // Free-stream velocity magnitude; set accordingly
+    magUInf {{v_magnitude}}; // Free-stream velocity magnitude; set accordingly
     lRef 1; // Reference length; characteristic length of your model
     Aref 1; // Reference area; projected area perpendicular to flow
     outputControl timeStep;

@@ -10,6 +10,7 @@ from src.optimization.openfoam_interfaces import (
     run_blockmesh,
     run_checkmesh,
     run_simple,
+    set_fluid_velocities,
 )
 from src.utils.logging_setup import get_logger
 
@@ -20,7 +21,7 @@ from ..optimization.result_processing import process_result  # type: ignore
 def funct(x: np.array, parameters: Parameters):
     logger = get_logger(__name__)
 
-    case_uuid = str(uuid.uuid4())
+    case_uuid = str(uuid.uuid4()) if not parameters.is_debug else parameters.run_name
 
     wu = x[0:3]  # Upper surface
     wl = x[3:6]  # Lower surface
@@ -39,6 +40,8 @@ def funct(x: np.array, parameters: Parameters):
     case_path.mkdir(exist_ok=True, parents=True)
     shutil.copytree(src=template_path, dst=case_path, dirs_exist_ok=True)
 
+    set_fluid_velocities(case_path, parameters.fluid_velocity)
+
     mesh_airfoil(airfoil_coordinates=airfoil_coordinates, case_path=case_path)
 
     block_mesh_result = run_blockmesh(case_path=case_path)
@@ -54,7 +57,6 @@ def funct(x: np.array, parameters: Parameters):
             check_mesh_result=check_mesh_result,
             simple_result=False,
         )
-        shutil.rmtree(case_path)
         return np.inf
 
     simple_result = run_simple(case_path)
@@ -71,7 +73,6 @@ def funct(x: np.array, parameters: Parameters):
             cl=np.NAN,
             cd=np.NAN,
         )
-        shutil.rmtree(case_path)
         return np.inf
 
     df = read_force_coefficients(case_path)

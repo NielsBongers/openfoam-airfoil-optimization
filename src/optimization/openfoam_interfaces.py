@@ -2,6 +2,7 @@ import re
 import subprocess
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 from ..utils.logging_setup import get_logger
@@ -70,6 +71,33 @@ def run_simple(case_path: Path):
         logger.warning("Failed to run SIMPLE.")
 
     return result.returncode == 0
+
+
+def set_fluid_velocities(case_path: Path, v: np.array):
+    velocity_magnitude = np.linalg.norm(v)
+
+    with open(case_path / "system/controlDict", "r") as f:
+        control_dict_template = f.read()
+
+    with open(case_path / "0/U", "r") as f:
+        u_template = f.read()
+
+    control_dict_template = control_dict_template.replace(
+        "{{v_magnitude}}", str(velocity_magnitude)
+    )
+
+    u_template = u_template.replace("{{v_x}}", str(v[0]))
+    u_template = u_template.replace("{{v_y}}", str(v[1]))
+    u_template = u_template.replace("{{v_z}}", str(v[2]))
+
+    print(u_template)
+    print(control_dict_template)
+
+    with open(case_path / "system/controlDict", "w") as f:
+        control_dict_template = f.write(control_dict_template)
+
+    with open(case_path / "0/U", "w") as f:
+        u_template = f.write(u_template)
 
 
 def read_force_coefficients(case_path: Path):

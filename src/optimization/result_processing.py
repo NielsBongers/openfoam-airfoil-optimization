@@ -23,4 +23,4 @@ def process_result(
             f"{case_uuid},{parameters.run_name},{x[0]},{x[1]},{x[2]},{x[3]},{x[4]},{x[5]},{block_mesh_result},{check_mesh_result},{simple_result},{cl},{cd}\n"
         )
 
-    shutil.rmtree(case_path)
+    shutil.rmtree(case_path) if not parameters.is_debug else None

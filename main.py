@@ -9,17 +9,19 @@ from src.optimization.optimization import Parameters, funct
 
 def custom_run():
     x = np.array(
-        [-0.21256715, -0.55139223, -0.2564233, 0.07599256, -0.12636063, -0.23161034]
+        [-1.17702895, -0.68913867, 0.27642697, 0.54277215, 0.8440808, 0.80272403]
     )
 
     run_parameters = Parameters(
-        run_name="Custom run",
+        run_name="custom_run",
         cases_folder=Path("custom_runs"),
         template_path=Path("openfoam_template"),
+        is_debug=True,
         csv_path=Path("results/csv/custom_results.csv"),
+        fluid_velocity=np.array([100, 100, 0]),
     )
 
-    funct(x=x, parameters=run_parameters)
+    return funct(x=x, parameters=run_parameters)
 
 
 def default_run():
@@ -27,7 +29,9 @@ def default_run():
         run_name="Debugging run",
         cases_folder=Path("openfoam_cases"),
         template_path=Path("openfoam_template"),
+        is_debug=False,
         csv_path=Path("results/csv/results.csv"),
+        fluid_velocity=np.array([100, 0, 0]),
     )
 
     # Analyzed with GPT4o, 2% - 98% of values attempted.
