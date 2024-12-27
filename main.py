@@ -9,7 +9,14 @@ from src.optimization.optimization import Parameters, funct
 
 def custom_run():
     x = np.array(
-        [-1.17702895, -0.68913867, 0.27642697, 0.54277215, 0.8440808, 0.80272403]
+        [
+            -0.1172639154843245,
+            0.1970869704402985,
+            0.353885748122542,
+            0.5002696302358005,
+            0.6169617830584412,
+            0.8313519974373287,
+        ]
     )
 
     run_parameters = Parameters(
