@@ -6,7 +6,6 @@ import pandas as pd
 from scipy.optimize import differential_evolution
 
 from src.optimization.optimization import Parameters, funct
-from src.post_processing.post_process import render_foam_cases
 
 
 def custom_run():
