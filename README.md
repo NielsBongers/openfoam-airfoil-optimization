@@ -66,4 +66,4 @@ I have added some basic angle-of-attack (AoA) formats already to the OpenFOAM te
 
 I am curious about potential model reduction: by predicting performance based on the six inputs, a lot of time could be saved. If a rough prediction on which airfoils perform best is accurate, a simple machine learning model like random forests could be used for an initial optimization stage. I doubt a simple model like this would be sufficient, but it's an interesting avenue to explore. 
 
-<img src="figures/27122024 - OpenFOAM - random forest reduced form.png" width="400" alt="Random forest reduced form idea">
+<img src="figures/27122024 - OpenFOAM - random forest model reduction.png" width="400" alt="Random forest model reduction idea">
