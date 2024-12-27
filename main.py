@@ -25,7 +25,7 @@ def custom_run():
     return funct(x=x, parameters=run_parameters)
 
 
-def run_top_n(csv_path: Path = Path("results/csv/results.csv"), n: int = 10):
+def run_top_n(csv_path: Path = Path("results/csv/results.csv"), n: int = 1):
     df = pd.read_csv(csv_path)
 
     df_filtered = df.dropna(subset=["cl", "cd"]).copy()
