@@ -12,7 +12,7 @@ The simulation is then ran. If any issues are encountered with the meshing, `blo
 
 The result is a CSV containing airfoil parameters and their performance. These can be further post-processed with ParaView. 
 
-Overall, I'm surprised at how smoothly this project went. The existence of existing repos helped a lot, especially with meshing. I found it an interesting introduction into coupling optimization methods and non-trivial simulations. 
+Overall, I'm surprised at how smoothly this project went. The existing repos helped a lot, especially with meshing. I found it an interesting introduction into coupling optimization methods and non-trivial simulations. I'm still impressed at how effective differential evolution was - with a previous meshing-template, it was able to find and exploit flaws with ease. 
 
 ## Installation 
 
