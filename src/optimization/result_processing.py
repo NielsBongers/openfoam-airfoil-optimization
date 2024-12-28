@@ -13,6 +13,7 @@ def process_result(
     parameters: Parameters,
     case_uuid: str,
     case_path: Path,
+    clipping_result: bool,
     block_mesh_result: bool,
     check_mesh_result: bool,
     simple_result: bool,
@@ -35,7 +36,7 @@ def process_result(
     timestamp = datetime.now().isoformat(timespec="microseconds")
     with open(parameters.csv_path, "a") as f:
         f.write(
-            f'{timestamp},{case_uuid},"{parameters.run_name}",{x[0]},{x[1]},{x[2]},{x[3]},{x[4]},{x[5]},{block_mesh_result},{check_mesh_result},{simple_result},{cl},{cd}\n'
+            f'{timestamp},{case_uuid},"{parameters.run_name}",{x[0]},{x[1]},{x[2]},{x[3]},{x[4]},{x[5]},{clipping_result},{block_mesh_result},{check_mesh_result},{simple_result},{cl},{cd}\n'
         )
 
     shutil.rmtree(case_path) if not parameters.is_debug else None

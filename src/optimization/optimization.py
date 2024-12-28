@@ -46,6 +46,38 @@ def funct(x: np.array, parameters: Parameters) -> float:
     case_path = parameters.cases_folder / case_uuid
     template_path = parameters.template_path
 
+    # blockMesh seems to accept cases where the bottom part of the airfoil clips into the top. This should prevent that.
+    top_section = airfoil_coordinates[
+        1:
+    ][
+        0 : 25 - 1
+    ]  # We skip the first entry (that's (1.0, 0.0), and the last (because that's (0.0 0.0)). Now the top section has the same x as the bottom section.
+
+    bottom_section = airfoil_coordinates[
+        1:
+    ][
+        25:
+    ][
+        ::-1
+    ]  # We then do the same here, except we reverse the order, so that now the x-coordinates line up.
+
+    top_bottom_difference = top_section[:, 1] - bottom_section[:, 1]
+
+    if (top_bottom_difference < 0).any():
+        logger.info("Airfoil clipping detected")
+
+        process_result(
+            x=x,
+            parameters=parameters,
+            case_uuid=case_uuid,
+            case_path=case_path,
+            clipping_result=False,
+            block_mesh_result=False,
+            check_mesh_result=False,
+            simple_result=False,
+        )
+        return np.inf
+
     case_path.mkdir(exist_ok=True, parents=True)
     shutil.copytree(src=template_path, dst=case_path, dirs_exist_ok=True)
 
@@ -66,11 +98,19 @@ def funct(x: np.array, parameters: Parameters) -> float:
             parameters=parameters,
             case_uuid=case_uuid,
             case_path=case_path,
+            clipping_result=True,
             block_mesh_result=block_mesh_result,
             check_mesh_result=check_mesh_result,
             simple_result=False,
         )
         return np.inf
+
+    # Creating the .foam file
+    with open(
+        case_path / (parameters.run_name + ".foam"),
+        "w",
+    ) as _:
+        pass
 
     simple_result = run_simple(case_path)
 
@@ -81,6 +121,7 @@ def funct(x: np.array, parameters: Parameters) -> float:
             parameters=parameters,
             case_uuid=case_uuid,
             case_path=case_path,
+            clipping_result=True,
             block_mesh_result=block_mesh_result,
             check_mesh_result=check_mesh_result,
             simple_result=simple_result,

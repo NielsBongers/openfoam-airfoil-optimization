@@ -9,9 +9,7 @@ from src.optimization.optimization import Parameters, funct
 
 
 def custom_run():
-    x = np.array(
-        [-0.14624043, 0.21336766, 0.41475734, 0.1628779, 0.08464761, 0.81322424]
-    )
+    x = np.array([-0.109434, 0.355815, 0.192206, 0.154837, 0.312089, 0.232870])
 
     run_parameters = Parameters(
         run_name="custom_run",
@@ -51,13 +49,6 @@ def run_top_n(csv_path: Path = Path("results/csv/results.csv"), n: int = 1):
 
         csv_path.parent.mkdir(exist_ok=True, parents=True)
 
-        # Creating the .foam file
-        with open(
-            case_path / (run_parameters.run_name + ".foam"),
-            "w",
-        ) as _:
-            pass
-
         funct(x=x, parameters=run_parameters)
 
 
@@ -71,7 +62,7 @@ def default_run():
         fluid_velocity=np.array([100, 0, 0]),
     )
 
-    run_parameters.csv_path.mkdir(exist_okay=True, parents=True)
+    run_parameters.csv_path.parent.mkdir(exist_ok=True, parents=True)
 
     bounds = [
         (-1.4400, -0.1027),
@@ -105,6 +96,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.custom:
+        # custom_run()
         run_top_n()
     else:
         default_run()
