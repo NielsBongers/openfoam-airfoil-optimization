@@ -54,7 +54,7 @@ def run_top_n(csv_path: Path = Path("results/csv/results.csv"), n: int = 1):
 
 def default_run():
     run_parameters = Parameters(
-        run_name="Gathering data, including negative",
+        run_name="Fixed clipping?",
         cases_folder=Path("openfoam_cases"),
         template_path=Path("openfoam_template"),
         is_debug=False,
