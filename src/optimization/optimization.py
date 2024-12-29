@@ -125,8 +125,8 @@ def funct(x: np.array, parameters: Parameters) -> float:
             block_mesh_result=block_mesh_result,
             check_mesh_result=check_mesh_result,
             simple_result=simple_result,
-            cl=np.NAN,
-            cd=np.NAN,
+            cl=np.nan,
+            cd=np.nan,
         )
         return np.inf
 

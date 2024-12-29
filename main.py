@@ -9,21 +9,30 @@ from src.optimization.optimization import Parameters, funct
 
 
 def custom_run():
-    x = np.array([-0.109434, 0.355815, 0.192206, 0.154837, 0.312089, 0.232870])
+    x = np.array(
+        [
+            -0.17998231876970106,
+            0.32481200215249245,
+            0.23387707923559095,
+            0.41065840159414924,
+            0.35370912105614044,
+            0.640739630965696,
+        ]
+    )
 
     run_parameters = Parameters(
-        run_name="custom_run",
+        run_name="5_degree_AoA_custom_run_fixed_firstLayerHeight",
         cases_folder=Path("custom_runs"),
         template_path=Path("openfoam_template"),
         is_debug=True,
         csv_path=Path("results/csv/custom_results.csv"),
-        fluid_velocity=np.array([100, 0, 0]),
+        fluid_velocity=np.array([99.6194698092, 8.7155742748, 0]),
     )
 
     return funct(x=x, parameters=run_parameters)
 
 
-def run_top_n(csv_path: Path = Path("results/csv/results.csv"), n: int = 1):
+def run_top_n(csv_path: Path = Path("results/csv/results.csv"), n: int = 10):
     df = pd.read_csv(csv_path)
 
     df_filtered = df.dropna(subset=["cl", "cd"]).copy()
@@ -41,7 +50,7 @@ def run_top_n(csv_path: Path = Path("results/csv/results.csv"), n: int = 1):
             template_path=Path("openfoam_template"),
             is_debug=True,
             csv_path=Path("results/csv/custom_results.csv"),
-            fluid_velocity=np.array([100, 0, 0]),
+            fluid_velocity=np.array([99.6194698092, 8.7155742748, 0]),
         )
 
         case_path = run_parameters.cases_folder / Path(run_parameters.run_name)
@@ -54,12 +63,12 @@ def run_top_n(csv_path: Path = Path("results/csv/results.csv"), n: int = 1):
 
 def default_run():
     run_parameters = Parameters(
-        run_name="Fixed clipping?",
+        run_name="5_degree_AoA_fixed_firstLayerHeight",
         cases_folder=Path("openfoam_cases"),
         template_path=Path("openfoam_template"),
         is_debug=False,
         csv_path=Path("results/csv/results.csv"),
-        fluid_velocity=np.array([100, 0, 0]),
+        fluid_velocity=np.array([99.6194698092, 8.7155742748, 0]),
     )
 
     run_parameters.csv_path.parent.mkdir(exist_ok=True, parents=True)
