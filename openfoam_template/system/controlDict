@@ -55,8 +55,8 @@ functions {
     rho rhoInf; // For incompressible solvers, use rhoInf
     rhoInf 1.225; // Reference density (e.g., for air at sea level)
     CofR (0 0 0); // Center of rotation; adjust as needed
-    liftDir (0 1 0); // Direction of lift; adjust based on your setup
-    dragDir (1 0 0); // Direction of drag; adjust based on your setup
+    liftDir ({{lift_x}} {{lift_y}} {{lift_z}}); // Direction of lift; adjust based on your setup
+    dragDir ({{drag_x}} {{drag_y}} {{drag_z}}); // Direction of drag; adjust based on your setup
     pitchAxis (0 0 1); // Axis for pitching moment; adjust as needed
     magUInf {{v_magnitude}}; // Free-stream velocity magnitude; set accordingly
     lRef 1; // Reference length; characteristic length of your model

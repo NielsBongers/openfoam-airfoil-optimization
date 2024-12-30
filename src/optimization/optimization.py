@@ -140,6 +140,7 @@ def funct(x: np.array, parameters: Parameters) -> float:
     logger.info(f"Successfully ran: {case_uuid} - {lift_drag_ratio}")
 
     if df["Cd"].iloc[-1] < 0:
+        logger.info(f"Got {df["Cd"].iloc[-1]}: penalizing.")
         process_result(
             x=x,
             parameters=parameters,

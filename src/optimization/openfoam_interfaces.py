@@ -86,6 +86,22 @@ def set_fluid_velocities(case_path: Path, v: np.array):
         "{{v_magnitude}}", str(velocity_magnitude)
     )
 
+    alpha = np.arctan2(v[1], v[0])
+
+    lift_x = -np.sin(alpha)
+    lift_y = np.cos(alpha)
+    lift_z = 0.0
+    drag_x = np.cos(alpha)
+    drag_y = np.sin(alpha)
+    drag_z = 0.0
+
+    control_dict_template = control_dict_template.replace("{{lift_x}}", str(lift_x))
+    control_dict_template = control_dict_template.replace("{{lift_y}}", str(lift_y))
+    control_dict_template = control_dict_template.replace("{{lift_z}}", str(lift_z))
+    control_dict_template = control_dict_template.replace("{{drag_x}}", str(drag_x))
+    control_dict_template = control_dict_template.replace("{{drag_y}}", str(drag_y))
+    control_dict_template = control_dict_template.replace("{{drag_z}}", str(drag_z))
+
     u_template = u_template.replace("{{v_x}}", str(v[0]))
     u_template = u_template.replace("{{v_y}}", str(v[1]))
     u_template = u_template.replace("{{v_z}}", str(v[2]))
