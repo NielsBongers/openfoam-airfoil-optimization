@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import differential_evolution
 
+from src.optimization.openfoam_interfaces import read_force_coefficients
 from src.optimization.optimization import Parameters, funct
 
 

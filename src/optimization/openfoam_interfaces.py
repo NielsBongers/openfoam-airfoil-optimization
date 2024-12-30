@@ -55,7 +55,7 @@ def run_checkmesh(case_path: Path):
     return False
 
 
-def run_simple(case_path: Path):
+def run_simple(case_path: Path, case_uuid: str):
     logger = get_logger(__name__)
 
     result = subprocess.run(
@@ -67,7 +67,7 @@ def run_simple(case_path: Path):
     )
 
     if not result.returncode == 0:
-        logger.debug(f"{result.stderr}")
+        logger.debug(f"Case UUID: {case_uuid}\n{result.stderr}")
         logger.warning("Failed to run SIMPLE.")
 
     return result.returncode == 0

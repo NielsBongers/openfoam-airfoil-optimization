@@ -75,6 +75,7 @@ def funct(x: np.array, parameters: Parameters) -> float:
             block_mesh_result=False,
             check_mesh_result=False,
             simple_result=False,
+            has_converged=False,
         )
         return np.inf
 
@@ -102,6 +103,7 @@ def funct(x: np.array, parameters: Parameters) -> float:
             block_mesh_result=block_mesh_result,
             check_mesh_result=check_mesh_result,
             simple_result=False,
+            has_converged=False,
         )
         return np.inf
 
@@ -112,7 +114,7 @@ def funct(x: np.array, parameters: Parameters) -> float:
     ) as _:
         pass
 
-    simple_result = run_simple(case_path)
+    simple_result = run_simple(case_path, case_uuid)
 
     if not simple_result:  # SIMPLE has failed to run.
         logger.debug(f"Encountered error with SIMPLE. Skipping {case_uuid}.")
@@ -125,6 +127,7 @@ def funct(x: np.array, parameters: Parameters) -> float:
             block_mesh_result=block_mesh_result,
             check_mesh_result=check_mesh_result,
             simple_result=simple_result,
+            has_converged=False,
             cl=np.nan,
             cd=np.nan,
         )
@@ -133,14 +136,12 @@ def funct(x: np.array, parameters: Parameters) -> float:
     # We now got data: let's read it and post-process a bit.
     df = read_force_coefficients(case_path)
 
-    df["Cl_Cd_ratio"] = df["Cl"] / df["Cd"]
-    lift_drag_ratio = df["Cl_Cd_ratio"].iloc[-1]
+    df["cl_cd_ratio"] = df["Cl"] / df["Cd"]
 
-    logger.debug(f"Got {lift_drag_ratio}")
-    logger.info(f"Successfully ran: {case_uuid} - {lift_drag_ratio}")
-
-    if df["Cd"].iloc[-1] < 0:
-        logger.info(f"Got {df["Cd"].iloc[-1]}: penalizing.")
+    # I noticed it doesn't converge in a lot of cases, so I added this to check.
+    converged_std_cl_cd_ratio = df[df["# Time"] > 1500]["cl_cd_ratio"].std()
+    if converged_std_cl_cd_ratio > 1.0:
+        logger.info(f"Solver failed to converge: std = {converged_std_cl_cd_ratio}")
         process_result(
             x=x,
             parameters=parameters,
@@ -150,6 +151,30 @@ def funct(x: np.array, parameters: Parameters) -> float:
             block_mesh_result=block_mesh_result,
             check_mesh_result=check_mesh_result,
             simple_result=simple_result,
+            has_converged=False,
+            cl=np.nan,
+            cd=np.nan,
+        )
+        return np.inf
+
+    lift_drag_ratio = df["cl_cd_ratio"].iloc[-1]
+
+    logger.debug(f"Got {lift_drag_ratio}")
+    logger.info(f"Successfully ran: {case_uuid} - {lift_drag_ratio}")
+
+    if df["Cd"].iloc[-1] < 0:
+        logger.info(f"Got {df['Cd'].iloc[-1]}: penalizing.")
+
+        process_result(
+            x=x,
+            parameters=parameters,
+            case_uuid=case_uuid,
+            case_path=case_path,
+            no_clipping=True,
+            block_mesh_result=block_mesh_result,
+            check_mesh_result=check_mesh_result,
+            simple_result=simple_result,
+            has_converged=True,
             cl=df["Cl"].iloc[-1],
             cd=df["Cd"].iloc[-1],
         )
@@ -164,6 +189,7 @@ def funct(x: np.array, parameters: Parameters) -> float:
         block_mesh_result=block_mesh_result,
         check_mesh_result=check_mesh_result,
         simple_result=simple_result,
+        has_converged=True,
         cl=df["Cl"].iloc[-1],
         cd=df["Cd"].iloc[-1],
     )
