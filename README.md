@@ -56,6 +56,25 @@ The repo includes an analysis-notebook. This tracks performance over time, and a
 
 <img src="figures/27122024 - OpenFOAM - Lift-drag ratio over time.png" width="600" alt="Lift-drag ratio over time with differential evolution.">
 
+## Updates and adjustments 
+
+### Turbulence modelling 
+
+I started off with the default parameters from a case I found, which used $\tilde \nu = 0.14$. That seemed high, also compared to other OpenFOAM examples I found, but I assumed it was acceptable - up until I started getting $C_l/C_d$ values of over 900. Reducing the layer thickness close to the mesh to fix $y+$ did not improve the situation. 
+
+It turns out, $\tilde \nu$ was probably far too high. There are different sources here. [CFD-Online](https://www.cfd-online.com/Wiki/Turbulence_free-stream_boundary_conditions) argues $\tilde \nu$ should be 0 for the Spalart-Allmaras model (which I'm using), but can also be set to $\tilde \nu \leq \nu / 2$ if that causes problems with solvers. Since $\nu \approx 14.88 \cdot 10^{-6}$ at ambient temperatures and pressures, this is certainly a far lower value than I was using before. A [NASA source](https://turbmodels.larc.nasa.gov/spalart.html) gives different values still. (Note that this page uses $\hat \nu$ rather than $\tilde \nu$; the latter apparently didn't show up properly on screens when this page was created.) It says to use $\tilde \nu_\text{far-field}$ between $3 \nu_\infty$ and $5 \nu_\infty$, so between $4.5$ and $7.5 \cdot 10^{-5}$. 
+
+I tested some of these for one of the airfoils that previously messed up, and it appears there is almost no difference between the smaller values. 
+
+| Case              | $\tilde \nu$      | $C_l$      | $C_d$        | $C_l/C_d$    |
+|-------------------|-------------------|------------|--------------|--------------|
+| Original          | $0.14$           | 0.516667   | -0.000555    | -931.013514  |
+| OpenFOAM default  | $4.0 \cdot 10^{-5}$ | 1.13645    | -0.0742927   | -15.295453   |
+| Lower NASA-bound  | $4.5 \cdot 10^{-5}$ | 1.1369     | -0.0743574   | -15.287780   |
+| Far lower value   | $7.0 \cdot 10^{-6}$ | 1.13665    | -0.0743269   | -15.290234   |
+
+I will continue to use $4.5 \cdot 10^{-5}$ for now. If anyone has better suggestions, I would love to hear them! 
+
 ## Future steps 
 
 ### $C_l/C_d$ curves 

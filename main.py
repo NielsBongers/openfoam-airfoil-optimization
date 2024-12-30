@@ -11,12 +11,12 @@ from src.optimization.optimization import Parameters, funct
 def custom_run():
     x = np.array(
         [
-            -0.17998231876970106,
-            0.32481200215249245,
-            0.23387707923559095,
-            0.41065840159414924,
-            0.35370912105614044,
-            0.640739630965696,
+            -0.2559407074537591,
+            0.08277623156819876,
+            0.012895024774770975,
+            0.30075161784670684,
+            0.7115298583892795,
+            0.021657744269316548,
         ]
     )
 
@@ -100,12 +100,19 @@ if __name__ == "__main__":
     parser.add_argument(
         "--custom",
         action="store_true",
-        help="Run custom logic instead of default logic",
+        help="Run custom evaluation.",
+    )
+    parser.add_argument(
+        "--topn",
+        type=int,
+        help="Simulate top-n airfoils",
     )
     args = parser.parse_args()
 
     if args.custom:
-        # custom_run()
-        run_top_n()
+        custom_run()
+    elif args.topn is not None:
+        print(f"Simulating top-{args.topn} airfoils.")
+        run_top_n(n=args.topn)
     else:
         default_run()
