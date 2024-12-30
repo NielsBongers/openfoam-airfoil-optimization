@@ -27,7 +27,7 @@ def mesh_airfoil(airfoil_coordinates: np.array, case_path: Path):
     ChordLength = 1
     DomainHeight = 20  # Multiples Chord Length
     WakeLength = 20  # Multiples Chord Length
-    firstLayerHeight = 0.00001  # Multiples Chord Length
+    firstLayerHeight = 0.001  # Multiples Chord Length
     growthRate = 1.05
     MaxCellSize = 0.5  # Multiples of chordlength
 
