@@ -139,6 +139,21 @@ def funct(x: np.array, parameters: Parameters) -> float:
     logger.debug(f"Got {lift_drag_ratio}")
     logger.info(f"Successfully ran: {case_uuid} - {lift_drag_ratio}")
 
+    if df["Cd"].iloc[-1] < 0:
+        process_result(
+            x=x,
+            parameters=parameters,
+            case_uuid=case_uuid,
+            case_path=case_path,
+            no_clipping=True,
+            block_mesh_result=block_mesh_result,
+            check_mesh_result=check_mesh_result,
+            simple_result=simple_result,
+            cl=df["Cl"].iloc[-1],
+            cd=df["Cd"].iloc[-1],
+        )
+        return np.inf
+
     process_result(
         x=x,
         parameters=parameters,

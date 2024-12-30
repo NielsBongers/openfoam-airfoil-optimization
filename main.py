@@ -63,7 +63,7 @@ def run_top_n(csv_path: Path = Path("results/csv/results.csv"), n: int = 10):
 
 def default_run():
     run_parameters = Parameters(
-        run_name="5_degree_AoA_fixed_nu_tilda",
+        run_name="5_degree_AoA_fixed_nu_tilda_reduced_yplus_penalizing_neg_cd",
         cases_folder=Path("openfoam_cases"),
         template_path=Path("openfoam_template"),
         is_debug=False,
