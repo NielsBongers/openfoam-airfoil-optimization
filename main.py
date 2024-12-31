@@ -90,7 +90,7 @@ def default_run():
         maxiter=10000000,
         popsize=60,
         tol=1e-1,
-        workers=10,
+        workers=20,
         seed=42,
         args=(run_parameters,),
     )

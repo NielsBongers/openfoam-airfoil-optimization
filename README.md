@@ -75,6 +75,38 @@ I tested some of these for one of the airfoils that previously messed up, and it
 
 I will continue to use $4.5 \cdot 10^{-5}$ for now. If anyone has better suggestions, I would love to hear them! 
 
+### Convergence and populations 
+
+Another interesting issue; some airfoils never converged with SIMPLE, instead oscillating at different $C_l/C_d$ values. The intermediate SIMPLE steps looked a bit similar to a Kármán vortex street, and more iterations did not appear to help. I resolved this simply by specifying a bound on $\sigma_{C_l/C_d}$ and let differential evolution handle it. 
+
+With that, we get an interesting population. Three out of the top-four are all very different; the best performer is a fairly standard airfoil, albeit a bit thick. The next-best is almost bird-like, and the third is high-camber instead. It's surprising to see such variation even after a fairly long run. 
+
+<div style="text-align: center;">
+    <div style="display: flex; justify-content: center; flex-wrap: wrap;">
+        <div style="flex: 0 1 35%; margin: 10px;">
+            <img src="figures/31122024 - OpenFOAM - differential evolution - 5 AoA, 53.156 - converged properly.png" alt="53.156" style="width: 100%;">
+            <p>53.156</p>
+        </div>
+        <div style="flex: 0 1 35%; margin: 10px;">
+            <img src="figures/31122024 - OpenFOAM - differential evolution - 5 AoA, 52.751 - converged properly.png" alt="52.751" style="width: 100%;">
+            <p>52.751</p>
+        </div>
+    </div>
+    <div style="display: flex; justify-content: center; flex-wrap: wrap;">
+        <div style="flex: 0 1 35%; margin: 10px;">
+            <img src="figures/31122024 - OpenFOAM - differential evolution - 5 AoA, 51.072 - converged properly.png" alt="51.072" style="width: 100%;">
+            <p>51.072</p>
+        </div>
+        <div style="flex: 0 1 35%; margin: 10px;">
+            <img src="figures/31122024 - OpenFOAM - differential evolution - 5 AoA, 50.497 - converged properly.png" alt="50.497" style="width: 100%;">
+            <p>50.497</p>
+        </div>
+    </div>
+</div>
+
+$C_l/C_d$ _for different archetypes in the top-4 airfoils at 5° AoA._
+
+
 ## Future steps 
 
 ### $C_l/C_d$ curves 
@@ -84,5 +116,7 @@ I have added some basic angle-of-attack (AoA) formats already to the OpenFOAM te
 ### Model reduction 
 
 I am curious about potential model reduction: by predicting performance based on the six inputs, a lot of time could be saved. If a rough prediction on which airfoils perform best is accurate, a simple machine learning model like random forests could be used for an initial optimization stage. I doubt a simple model like this would be sufficient, but it's an interesting avenue to explore. 
+
+After some attempts, it seems surprisingly good. I get MAEs of 2 - 5, for a small training set, even for the best-performing airfoils, where there is correspondingly less data available. 
 
 <img src="figures/27122024 - OpenFOAM - random forest model reduction.png" width="400" alt="Random forest model reduction idea">
