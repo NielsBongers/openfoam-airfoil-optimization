@@ -84,21 +84,21 @@ With that, we get an interesting population. Three out of the top-four are all v
 <div style="text-align: center;">
     <div style="display: flex; justify-content: center; flex-wrap: wrap;">
         <div style="flex: 0 1 35%; margin: 10px;">
-            <img src="figures/31122024 - OpenFOAM - differential evolution - 5 AoA, 53.156 - converged properly.png" alt="53.156" style="width: 100%;">
+            <img src="figures/31122024 - OpenFOAM - differential evolution - 5 AoA, 53.156 - converged properly.png" alt="53.156" style="width: 40%;">
             <p>53.156</p>
         </div>
         <div style="flex: 0 1 35%; margin: 10px;">
-            <img src="figures/31122024 - OpenFOAM - differential evolution - 5 AoA, 52.751 - converged properly.png" alt="52.751" style="width: 100%;">
+            <img src="figures/31122024 - OpenFOAM - differential evolution - 5 AoA, 52.751 - converged properly.png" alt="52.751" style="width: 40%;">
             <p>52.751</p>
         </div>
     </div>
     <div style="display: flex; justify-content: center; flex-wrap: wrap;">
         <div style="flex: 0 1 35%; margin: 10px;">
-            <img src="figures/31122024 - OpenFOAM - differential evolution - 5 AoA, 51.072 - converged properly.png" alt="51.072" style="width: 100%;">
+            <img src="figures/31122024 - OpenFOAM - differential evolution - 5 AoA, 51.072 - converged properly.png" alt="51.072" style="width: 40%;">
             <p>51.072</p>
         </div>
         <div style="flex: 0 1 35%; margin: 10px;">
-            <img src="figures/31122024 - OpenFOAM - differential evolution - 5 AoA, 50.497 - converged properly.png" alt="50.497" style="width: 100%;">
+            <img src="figures/31122024 - OpenFOAM - differential evolution - 5 AoA, 50.497 - converged properly.png" alt="50.497" style="width: 40%;">
             <p>50.497</p>
         </div>
     </div>
