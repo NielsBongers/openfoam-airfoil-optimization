@@ -114,8 +114,7 @@ I added code to evaluate the lift-drag ratio as a function of the angle-of-attac
 
 One interesting aspect here: I ran this up to 45°, but did not obtain sufficiently converged solutions there. Examining the forces for the highest AoA where `simpleFOAM` did not simply crash, we observe an oscillatory solution - I think this is basically the air detaching from the airfoil, resulting in a kind of Kármán vortex street, with SIMPLE unable to converge to a steady-state solution. Examining ParaView here, we indeed see oscillations in the flow field. 
 
-<img src="figures/
-01012025 - OpenFOAM - oscillatory solution to lift-drag ratio - 41.05 deg AoA.png" width="600" alt="C_l/C_d at 41.05° AoA.">
+<img src="figures/01012025 - OpenFOAM - oscillatory solution to lift-drag ratio - 41.05 deg AoA.png" width="600" alt="C_l C_d at 41.05 AoA.">
 
 This behavior previously caused a lot of issues with very small or negative $C_d$ values, until I simply specified that any solution where $\sigma_{C_l/C_d} \geq 1$ over the last 500 steps is disqualified, to let differential evolution take care of it. 
 
