@@ -5,6 +5,7 @@ from typing import Tuple
 import numpy as np
 
 from src.optimization.optimization import Parameters, funct
+from src.utils.utils import get_cst_by_uuid
 
 
 def run_simulation(args):
@@ -25,21 +26,12 @@ def run_simulation(args):
 
 
 def run_aoa_range(
-    x: np.array,
+    uuid: str,
     airspeed_magnitude: float,  # m/s
     angle_range_deg: Tuple[float, float],
     n_samples: int = 10,
 ):
-    x = np.array(
-        [
-            -0.2559407074537591,
-            0.08277623156819876,
-            0.012895024774770975,
-            0.30075161784670684,
-            0.7115298583892795,
-            0.021657744269316548,
-        ]
-    )
+    x = get_cst_by_uuid(uuid=uuid)
 
     min_angle_deg, max_angle_deg = angle_range_deg
     min_angle, max_angle = (
