@@ -5,8 +5,9 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import differential_evolution
 
-from src.optimization.openfoam_interfaces import read_force_coefficients
 from src.optimization.optimization import Parameters, funct
+from src.post_processing.aoa_processing import run_aoa_range
+from src.utils.utils import get_cst_by_uuid
 
 
 def custom_run():
@@ -90,30 +91,37 @@ def default_run():
         maxiter=10000000,
         popsize=60,
         tol=1e-1,
-        workers=20,
+        workers=15,
         seed=42,
         args=(run_parameters,),
     )
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Choose the run mode.")
-    parser.add_argument(
-        "--custom",
-        action="store_true",
-        help="Run custom evaluation.",
-    )
-    parser.add_argument(
-        "--topn",
-        type=int,
-        help="Simulate top-n airfoils",
-    )
-    args = parser.parse_args()
+    # plot_aoa()
 
-    if args.custom:
-        custom_run()
-    elif args.topn is not None:
-        print(f"Simulating top-{args.topn} airfoils.")
-        run_top_n(n=args.topn)
-    else:
-        default_run()
+    x = get_cst_by_uuid(uuid="844d53b2-85b2-4862-a182-42cf707e58ff")
+
+    run_aoa_range(x=x, airspeed_magnitude=100, angle_range_deg=(30, 45), n_samples=20)
+
+    # parser = argparse.ArgumentParser(description="Choose the run mode.")
+    # parser.add_argument(
+    #     "--custom",
+    #     action="store_true",
+    #     help="Run custom evaluation.",
+    # )
+    # parser.add_argument(
+    #     "--topn",
+    #     type=int,
+    #     help="Simulate top-n airfoils",
+    # )
+    # args = parser.parse_args()
+
+    # if args.custom:
+    #     custom_run()
+    # elif args.topn is not None:
+    #     print(f"Simulating top-{args.topn} airfoils.")
+    #     run_top_n(n=args.topn)
+    # else:
+    #     default_run()
+    #     default_run()

@@ -106,17 +106,31 @@ With that, we get an interesting population. Three out of the top-four are all v
 
 $C_l/C_d$ _for different archetypes in the top-4 airfoils at 5° AoA._
 
-
-## Future steps 
-
 ### $C_l/C_d$ curves 
 
-I have added some basic angle-of-attack (AoA) formats already to the OpenFOAM templates. The next step will be to pick the best-performing airfoils, and simulate a range of angles for them, then analyze the lift and drag performance. The same can then be done for different velocities, to obtain estimates of the window of operation per airfoil before stall etc. occurs. 
+I added code to evaluate the lift-drag ratio as a function of the angle-of-attack (AoA). The fact that the airfoil performs best at 5° isn't very surprising; it's optimized for that point. For higher angles, performance rapidly decreases. I considered multi-objective optimization to create an airfoil that performs well over a wider range, but that would be very slow to run. 
+
+<img src="figures/01012025 - OpenFOAM - lift-drag ratio for angles of attack - random airfoil.png" width="600" alt="Angle-of-attack curves.">
+
+One interesting aspect here: I ran this up to 45°, but did not obtain sufficiently converged solutions there. Examining the forces for the highest AoA where `simpleFOAM` did not simply crash, we observe an oscillatory solution - I think this is basically the air detaching from the airfoil, resulting in a kind of Kármán vortex street, with SIMPLE unable to converge to a steady-state solution. Examining ParaView here, we indeed see oscillations in the flow field. 
+
+<img src="figures/
+01012025 - OpenFOAM - oscillatory solution to lift-drag ratio - 41.05 deg AoA.png" width="600" alt="$C_l/C_d$ at 41.05° AoA.">
+
+This behavior previously caused a lot of issues with very small or negative $C_d$ values, until I simply specified that any solution where $\sigma_{C_l/C_d} \geq 1$ over the last 500 steps is disqualified, to let differential evolution take care of it. 
 
 ### Model reduction 
 
 I am curious about potential model reduction: by predicting performance based on the six inputs, a lot of time could be saved. If a rough prediction on which airfoils perform best is accurate, a simple machine learning model like random forests could be used for an initial optimization stage. I doubt a simple model like this would be sufficient, but it's an interesting avenue to explore. 
 
-After some attempts, it seems surprisingly good. I get MAEs of 2 - 5, for a small training set, even for the best-performing airfoils, where there is correspondingly less data available. 
+After some attempts, it seems surprisingly good. I get MAEs of 1.5 - 5, for a small training set, even for the best-performing airfoils, where there is correspondingly less data available. This is technically a surrogate model-approach. 
 
 <img src="figures/27122024 - OpenFOAM - random forest model reduction.png" width="400" alt="Random forest model reduction idea">
+
+After running it a bit longer, it gets better and better; I'm very surprised. We do have a fair amount of data, but this is spread out in six dimensions; the curse of dimensionality should be kicking in here, yet somehow, even with quite sparse data, it's doing well. However, I am not using a randomly sampled set; the data is all from an optimizer, so it's likely to be clustered around certain regions, effectively reducing dimensionality. 
+
+## Future steps 
+
+### Expanding model reduction 
+
+I am curious about training the random forest or some other simple machine learning model, and optimizing over that instead - then verifying the results using OpenFOAM. I should also create a fully random training sample and evaluate that, to avoid clustering around certain types of airfoils. Difficulty there, is that a lot of potential airfoils are simply not meshable, or solvable, because of clipping and other odd shapes. Obtaining a representative sample that is not clustered around existing, realistic airfoils that are in the dataset may be difficult. 
