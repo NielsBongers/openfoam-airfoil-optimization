@@ -5,20 +5,11 @@ import pandas as pd
 from scipy.optimize import differential_evolution
 
 from src.optimization.optimization import Parameters, funct
+from src.utils.utils import get_cst_by_uuid
 
 
-def custom_run():
-    x = np.array(
-        [
-            -0.2559407074537591,
-            0.08277623156819876,
-            0.012895024774770975,
-            0.30075161784670684,
-            0.7115298583892795,
-            0.021657744269316548,
-        ]
-    )
-
+def custom_run(uuid: str):
+    x = get_cst_by_uuid(uuid=uuid)
     run_parameters = Parameters(
         run_name="5_degree_AoA_custom_run_fixed_firstLayerHeight",
         cases_folder=Path("custom_runs"),
@@ -72,6 +63,7 @@ def default_run():
 
     run_parameters.csv_path.parent.mkdir(exist_ok=True, parents=True)
 
+    # Analyzed feasible region at one point; this is the range [0.02 - 0.98] of what worked.
     bounds = [
         (-1.4400, -0.1027),
         (-1.2552, 1.2923),
@@ -85,10 +77,11 @@ def default_run():
         funct,
         bounds,
         strategy="best1bin",
-        maxiter=10000000,
-        popsize=60,
+        maxiter=100000,
+        popsize=60,  # I picked 10x the parameter count.
         tol=1e-1,
         workers=15,
         seed=42,
         args=(run_parameters,),
+        updating="deferred",
     )

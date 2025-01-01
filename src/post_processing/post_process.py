@@ -10,11 +10,11 @@ def render_foam_cases(
 ):
     """Function to automatically render ParaView outputs with some basic settings. This is very hacked together: expect some debugging.
     ParaView packages its own Python 3.10 distribution, so I created a Python file that is called using that - it's not pretty.
-    To use this, first run `run_top_n` (or `python main.py --custom`), which creates the folder `custom_runs`, from which this can subsequently be ran. 
+    To use this, first run `run_top_n` (or `python main.py --custom`), which creates the folder `custom_runs`, from which this can subsequently be ran.
 
     Args:
         cases_path (Path): Path to the folder with .foam cases to render.
-        pvpython_path (_type_, optional): `pvpython` installation location. Likely in `ProgramFiles` for other users. Defaults to r"C:\Programs\ParaView\bin\pvpython".
+        pvpython_path (str, optional): `pvpython` installation location. Likely in `ProgramFiles` for other users. Defaults to r"C:\Programs\ParaView\bin\pvpython".
     """
     foam_file_paths = list(cases_path.glob("**/*.foam"))
 
