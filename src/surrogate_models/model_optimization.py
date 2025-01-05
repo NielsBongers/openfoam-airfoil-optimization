@@ -133,7 +133,7 @@ def funct_hybrid(
 
     cl_cd_predicted = reg_model.predict(X=x)
 
-    logger.info(f"Model result: {cl_cd_predicted.item()}")
+    logger.info(f"Model result: {cl_cd_predicted.item()} for {x}")
 
     try:
         shutil.rmtree(case_path)
