@@ -112,7 +112,7 @@ def train_models(dataset_path: Path = Path("results/csv/results.csv")):
     X_reg_train, X_reg_test, y_reg_train, y_reg_test = create_split(
         df_completed,
         feature_columns,
-        "cl_cd",
+        "cl",
     )
 
     model_params_path = Path("results/model_params/model_parameters.json")

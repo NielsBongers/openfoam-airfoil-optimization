@@ -21,11 +21,11 @@ def funct(
     if predicted_failure:
         return np.inf
 
-    cl_cd_predicted = reg_model.predict(X=x)
+    cl_predicted = reg_model.predict(X=x)
 
-    logger.info(f"Model result: {cl_cd_predicted.item()}")
+    logger.info(f"Model result: {cl_predicted.item()}")
 
-    return -cl_cd_predicted.item()
+    return -cl_predicted.item()
 
 
 def run_surrogate_model():
@@ -47,7 +47,7 @@ def run_surrogate_model():
         funct,
         bounds,
         strategy="best1bin",
-        maxiter=2,
+        maxiter=1000,
         popsize=60,  # I picked 10x the parameter count.
         tol=1e-10,
         workers=-1,

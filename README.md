@@ -135,6 +135,8 @@ After running it a bit longer, it gets better and better; I'm very surprised. We
 
 I added a grid-search with 5-fold cross-validation to optimize a classification and regression model, then optimized those with the same differential evolution code. This is a two-step process; we first predict whether we will have any result at all (i.e. no failures in overlapping airfoils, `blockMesh`, `simpleFoam`, or convergence issues), and if the random forest predicts there aren't, we regress our vector to obtain $C_l/C_d$. 
 
-Oddly, this gets stuck _below_ the best-performers that we previously found using the regular optimization method. Overall, though, it's very similar in shape and design to the optimal version, and it's close; the best airfoil I have found thus far reached 59.68698, and this one is at 58.5696; it's not too far away, and it only took a few minutes to run, compared with 72 hours for the full model. 
+Oddly, this gets stuck _below_ the best-performers that we previously found using the regular optimization method. Overall, though, it's very similar in shape and design to the optimal version, and it's close; the best airfoil I have found thus far reached 59.68698, and this one is at 59.31823; it's very close, and it only took a few minutes to run, compared with 72 hours for the full model.[^2] 
+
+[^2]: The figure name has `58.57` in there, but I messed up the naming; that was for a previous, worse airfoil.
 
 <img src="figures/05012024 - OpenFOAM - Random forest 58.57 - best performer - pressure.png" width="600" alt="Random forest surrogate model optimized result">
