@@ -4,15 +4,19 @@
 
 ## Overview 
 
-This is a simple set of code that automatically finds airfoils, optimizing for the lift-to-drag ratio $C_l / C_d$. It does this by generating an airfoil shape based on six CST-parameters (courtesy of [this repo](https://github.com/Ry10/Kulfan_CST/)). An initial attempt to create a variable meshing code myself with `blockMesh` turned out to be very painful, so the meshing is handled by [curiosityFluids' excellent mesher](https://github.com/curiosityFluids/curiosityFluidsAirfoilMesher) ([blog post](https://curiosityfluids.com/2019/04/22/automatic-airfoil-cmesh-generation-for-openfoam-rev-1/)) 
+This is a simple set of code that automatically finds airfoils, optimizing for the lift-to-drag ratio $C_l / C_d$. It does this by generating an airfoil shape based on six CST-parameters (courtesy of [this repo](https://github.com/Ry10/Kulfan_CST/)), using Kulfan's 2007 paper; [Universal Parametric Geometry Representation Method](https://arc.aiaa.org/doi/10.2514/1.29958). An initial attempt to create a variable meshing code myself with `blockMesh` turned out to be very painful, so the meshing is handled by [curiosityFluids' excellent mesher](https://github.com/curiosityFluids/curiosityFluidsAirfoilMesher) ([blog post](https://curiosityfluids.com/2019/04/22/automatic-airfoil-cmesh-generation-for-openfoam-rev-1/)) 
 
-SciPy's [differential evolution](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html) is taken as an optimization algorithm. It's far slower than other methods, but using a global optimizer here seems like the better choice. Other gradient-free algorithms like Nelder-Mead also found reasonable airfoils and were much faster, however. 
+SciPy's [differential evolution](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html) is taken as an optimization algorithm. It's far slower than other methods, but using a global optimizer here seems like the better choice, since I want to explore the full space, to see if there are multiple viable solutions. Other derivative-free algorithms like Nelder-Mead also found reasonable airfoils and were much faster, however.[^1]. 
 
-The simulation is then ran. If any issues are encountered with the meshing, `blockMesh`, or `simpleFoam`, the code returns $+\infty$. For $C_l / C_d$, any value is considered feasible, even negative ones - that turns out to generally be the code inventing upside-down airfoils. The case is essentially symmetric at $0^\circ$ angle-of-attack, so this is not penalized. The value to optimize is taken as $|C_l / C_d|$. 
+[^1]: We can't use derivative-based optimization methods very easily, because if we have a crash in `blockMesh`, we have no measure of how 'badly' things messed up, so steering gradients away from there is difficult. 
+
+The simulation is then ran. If any issues are encountered with the meshing, `blockMesh`, or `simpleFoam`, or convergence, the code returns $+\infty$. For $C_l$, any value is considered feasible, even negative ones - that turns out to generally be the code inventing upside-down airfoils. Negative $C_d$ are penalized, however, since this generally indicates the optimizer cheating, or the case not having converged. The value to minimize is then taken as $-|C_l / C_d|$. 
 
 The result is a CSV containing airfoil parameters and their performance. These can be further post-processed with ParaView. 
 
-Overall, I'm surprised at how smoothly this project went. The existing repos helped a lot, especially with meshing. I found it an interesting introduction into coupling optimization methods and non-trivial simulations. I'm still impressed at how effective differential evolution was - with a previous meshing-template, it was able to find and exploit flaws with ease. 
+Overall, I'm surprised at how smoothly this project went. The existing repos helped a lot, especially with meshing. I found it an interesting introduction into coupling optimization methods and non-trivial simulations. I'm still impressed at how effective differential evolution was - with a previous meshing-template, it was able to find and exploit flaws with ease. I had to adjust the goal function so many times there. 
+
+I am also very much impressed with how effective random forests were at representing these complex simulations in the surrogate model aspect! 
 
 ## Installation 
 
@@ -128,8 +132,10 @@ After some attempts, it seems surprisingly good. I get MAEs of 1.5 - 5, for a sm
 
 After running it a bit longer, it gets better and better; I'm very surprised. We do have a fair amount of data, but this is spread out in six dimensions; the curse of dimensionality should be kicking in here, yet somehow, even with quite sparse data, it's doing well. However, I am not using a randomly sampled set; the data is all from an optimizer, so it's likely to be clustered around certain regions, effectively reducing dimensionality. 
 
-## Future steps 
+### Optimizing over the surrogate models 
 
-### Expanding model reduction 
+I added a grid-search with 5-fold cross-validation to optimize a classification and regression model, then optimized those with the same differential evolution code. This is a two-step process; we first predict whether we will have any result at all (i.e. no failures in overlapping airfoils, `blockMesh`, `simpleFoam`, or convergence issues), and if the random forest predicts there aren't, we regress our vector to obtain $C_l/C_d$. 
 
-I am curious about training the random forest or some other simple machine learning model, and optimizing over that instead - then verifying the results using OpenFOAM. I should also create a fully random training sample and evaluate that, to avoid clustering around certain types of airfoils. Difficulty there, is that a lot of potential airfoils are simply not meshable, or solvable, because of clipping and other odd shapes. Obtaining a representative sample that is not clustered around existing, realistic airfoils that are in the dataset may be difficult. 
+Oddly, this gets stuck _below_ the best-performers that we previously found using the regular optimization method. Overall, though, it's very similar in shape and design to the optimal version, and it's close; the best airfoil I have found thus far reached 59.68698, and this one is at 58.5696; it's not too far away, and it only took a few minutes to run, compared with 72 hours for the full model. 
+
+<img src="figures/05012024 - OpenFOAM - Random forest 58.57 - best performer - pressure.png" width="600" alt="Random forest surrogate model optimized result">

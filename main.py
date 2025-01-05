@@ -3,6 +3,7 @@ import argparse
 from src.simulations.aoa_simulations import run_aoa_range
 from src.simulations.general_simulations import custom_run, default_run, run_top_n
 from src.simulations.velocity_simulations import run_velocity_range
+from src.surrogate_models.model_optimization import run_surrogate_model
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Choose the run mode.")
@@ -26,6 +27,9 @@ if __name__ == "__main__":
         type=str,
         help="Run velocity simulation with specified UUID.",
     )
+    parser.add_argument(
+        "--surrogate", action="store_true", help="Train and optimize surrogate model."
+    )
 
     args = parser.parse_args()
 
@@ -34,8 +38,6 @@ if __name__ == "__main__":
     elif args.topn is not None:
         run_top_n(n=args.topn)
     elif args.aoa:
-        # Example fixed values for demo purposes
-        print(args.aoa)
         run_aoa_range(
             uuid=args.aoa,
             airspeed_magnitude=100,
@@ -49,5 +51,7 @@ if __name__ == "__main__":
             velocity_range=(20, 200),
             n_samples=19,
         )
+    elif args.surrogate:
+        run_surrogate_model()
     else:
         default_run()

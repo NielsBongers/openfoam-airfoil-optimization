@@ -10,8 +10,10 @@ from src.utils.utils import get_cst_by_uuid
 
 def custom_run(uuid: str):
     x = get_cst_by_uuid(uuid=uuid)
+    # x = np.array([-1.109e-01, 3.064e-01, -6.165e-02, 2.270e-01, 2.602e-01, 8.863e-02])
+
     run_parameters = Parameters(
-        run_name="5_degree_AoA_custom_run_fixed_firstLayerHeight",
+        run_name="random_forest_optimized",
         cases_folder=Path("custom_runs"),
         template_path=Path("openfoam_template"),
         is_debug=True,
