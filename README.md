@@ -14,9 +14,8 @@ The simulation is then ran. If any issues are encountered with the meshing, `blo
 
 The result is a CSV containing airfoil parameters and their performance. These can be further post-processed with ParaView. 
 
-Overall, I'm surprised at how smoothly this project went. The existing repos helped a lot, especially with meshing. I found it an interesting introduction into coupling optimization methods and non-trivial simulations. I'm still impressed at how effective differential evolution was - with a previous meshing-template, it was able to find and exploit flaws with ease. I had to adjust the goal function so many times there. 
+This was a fun Christmas holiday project, and a nice foray into coupling non-trivial simulation problems with (surrogate-based) optimization. If anyone has suggestions on how to improve or adjust things further - I am very much open to them! Overall, I'm surprised at how smoothly this project went. The existing repos helped a lot, especially with meshing. I'm still impressed at how effective differential evolution was - with a previous meshing-template, it was able to find and exploit flaws with ease. I had to adjust the goal function so many times there. I am also very much impressed with how effective random forests were at representing these complex simulations in the surrogate model aspect! 
 
-I am also very much impressed with how effective random forests were at representing these complex simulations in the surrogate model aspect! 
 
 ## Installation 
 
