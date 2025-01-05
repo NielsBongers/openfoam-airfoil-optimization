@@ -2,9 +2,9 @@ import json
 from pathlib import Path
 
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.metrics import accuracy_score, mean_absolute_error, mean_squared_error
 from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.svm import SVC, SVR
 
 from src.utils.logging_setup import get_logger
 
@@ -16,45 +16,26 @@ def create_split(df, feature_cols, target_col, test_size=0.2, random_state=42):
 
 
 def run_cv_for_models(X_cls_train, y_cls_train, X_reg_train, y_reg_train, cv=5):
-    param_grid = {
-        "n_estimators": [
-            5,
-            10,
-            20,
-            50,
-            100,
-            200,
-            300,
-        ],
-        "max_depth": [5, 10, 15],
-        "min_samples_split": [
-            2,
-            5,
-            10,
-        ],
-        "min_samples_leaf": [
-            1,
-            2,
-            4,
-        ],
-        "max_features": [
-            None,
-            "sqrt",
-            "log2",
-        ],
-        "bootstrap": [
-            True,
-            False,
-        ],
+    param_grid_cls = {
+        "kernel": ["linear", "rbf", "poly", "sigmoid"],
+        "C": [0.1, 1, 10, 100],
+        "gamma": ["scale", "auto", 0.1, 0.01, 0.001],
     }
 
-    clf = RandomForestClassifier()
-    grid_clf = GridSearchCV(clf, param_grid, cv=cv, n_jobs=-1, verbose=10)
+    param_grid_reg = {
+        "kernel": ["linear", "rbf", "poly", "sigmoid"],
+        "C": [0.1, 1, 10, 100],
+        "gamma": ["scale", "auto", 0.1, 0.01, 0.001],
+        "epsilon": [0.1, 0.2, 0.5],
+    }
+
+    clf = SVC()
+    grid_clf = GridSearchCV(clf, param_grid_cls, cv=cv, n_jobs=-1, verbose=10)
     grid_clf.fit(X_cls_train, y_cls_train)
     best_params_cls = grid_clf.best_params_
 
-    reg = RandomForestRegressor()
-    grid_reg = GridSearchCV(reg, param_grid, cv=cv, n_jobs=-1, verbose=10)
+    reg = SVR()
+    grid_reg = GridSearchCV(reg, param_grid_reg, cv=cv, n_jobs=-1, verbose=10)
     grid_reg.fit(X_reg_train, y_reg_train)
     best_params_reg = grid_reg.best_params_
 
@@ -112,7 +93,7 @@ def train_models(dataset_path: Path = Path("results/csv/results.csv")):
     X_reg_train, X_reg_test, y_reg_train, y_reg_test = create_split(
         df_completed,
         feature_columns,
-        "cl",
+        "cl_cd",
     )
 
     model_params_path = Path("results/model_params/model_parameters.json")
@@ -120,10 +101,10 @@ def train_models(dataset_path: Path = Path("results/csv/results.csv")):
         model_params_path, X_cls_train, y_cls_train, X_reg_train, y_reg_train
     )
 
-    final_cls_model = RandomForestClassifier(**best_params_cls, n_jobs=1)
+    final_cls_model = SVC(**best_params_cls)
     final_cls_model.fit(X_cls_train, y_cls_train)
 
-    final_reg_model = RandomForestRegressor(**best_params_reg, n_jobs=1)
+    final_reg_model = SVR(**best_params_reg)
     final_reg_model.fit(X_reg_train, y_reg_train)
 
     y_cls_pred = final_cls_model.predict(X_cls_test)

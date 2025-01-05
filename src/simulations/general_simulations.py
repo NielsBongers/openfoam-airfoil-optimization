@@ -9,11 +9,22 @@ from src.utils.utils import get_cst_by_uuid
 
 
 def custom_run(uuid: str):
-    x = get_cst_by_uuid(uuid=uuid)
-    # x = np.array([-1.109e-01, 3.064e-01, -6.165e-02, 2.270e-01, 2.602e-01, 8.863e-02])
+    # x = get_cst_by_uuid(uuid=uuid)
+    # x = np.array(
+    #     [-1.425e-01, 4.565e-01, 3.139e-01, 4.900e-01, 9.329e-01, 5.562e-01]
+    # )  # Best random forest maximizing cl
+    # x = np.array(
+    #     [-0.142703, 0.524947, 0.309710, 0.483178, 0.922019, 0.546651]
+    # )  # highest naturally found cl
+    # x = np.array(
+    #     [-1.657e-01, 4.504e-01, 4.242e-01, 4.739e-01, 6.216e-01, 6.638e-01]
+    # )  # SVM result
+    # x = np.array([-1.028e-01, 2.409e-01, 5.674e-02, 2.932e-01, 2.247e-02, 2.279e-01])
+
+    x = np.array([-1.028e-01, 2.409e-01, 5.674e-02, 2.932e-01, 2.247e-02, 2.279e-01])
 
     run_parameters = Parameters(
-        run_name="random_forest_optimized",
+        run_name="svm_optimized_cl_cd",
         cases_folder=Path("custom_runs"),
         template_path=Path("openfoam_template"),
         is_debug=True,
