@@ -5,14 +5,14 @@ import numpy as np
 
 from src.airfoil_mesher.airfoil_mesher import mesh_airfoil
 from src.kulfan_converter.kulfan_to_coord import CST_shape
-from src.optimization.openfoam_interfaces import (
+from src.utils.logging_setup import get_logger
+from src.utils.openfoam_interfaces import (
     read_force_coefficients,
     run_blockmesh,
     run_checkmesh,
     run_simple,
     set_fluid_velocities,
 )
-from src.utils.logging_setup import get_logger
 
 from ..optimization.parameters import Parameters  # type: ignore
 from ..optimization.result_processing import process_result  # type: ignore
